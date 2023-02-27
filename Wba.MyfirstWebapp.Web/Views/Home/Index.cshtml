@@ -1,0 +1,15 @@
+﻿@model GamesIndexViewModel
+
+<h1>Index</h1>
+<table>
+    <tr>
+        <td>Title</td>
+    </tr>
+    @foreach(var game in Model.Games)
+    {
+        <tr>
+            <td>@game.Name</td>
+        </tr>
+    }
+</table>
+
