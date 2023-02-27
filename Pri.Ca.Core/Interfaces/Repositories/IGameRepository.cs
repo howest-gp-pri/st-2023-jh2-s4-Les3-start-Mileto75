@@ -15,5 +15,6 @@ namespace Pri.Ca.Core.Interfaces.Repositories
         Task<bool> AddAsync(Game game);
         Task<bool> UpdateAsync(Game game);
         Task<bool> DeleteAsync(int id);
+        IQueryable<Game> GetAll();
     }
 }

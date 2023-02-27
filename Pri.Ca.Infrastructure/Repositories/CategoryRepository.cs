@@ -36,6 +36,11 @@ namespace Pri.Ca.Infrastructure.Repositories
             return await Save();
         }
 
+        public IQueryable<Category> GetAll()
+        {
+            return _applicationDbcontext.Categories.AsQueryable();
+        }
+
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _applicationDbcontext

@@ -14,21 +14,77 @@ namespace Pri.Ca.Core.Services
     public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public GameService(IGameRepository gameRepository)
+        public GameService(IGameRepository gameRepository, ICategoryRepository categoryRepository)
         {
             _gameRepository = gameRepository;
+            _categoryRepository = categoryRepository;
         }
 
-        public Task<GamesItemResultModel> AddAsync(string title, List<int> categoryIds)
+        public async Task<GamesItemResultModel> AddAsync(string title, List<int> categoryIds)
         {
-            throw new NotImplementedException();
+            //check if title exists
+            var games = await _gameRepository.GetAllAsync();
+            if(games.Any(g => g.Name.Contains(title)))
+            {
+                //game exists error
+                return new GamesItemResultModel
+                {
+                    ValidationErrors = new List<ValidationResult>
+                    { new ValidationResult("Title exists!") }
+                };
+            }
+            var game = new Game 
+            {
+                Name = title,
+                Categories = _categoryRepository.GetAll()
+                .Where(c => categoryIds.Contains(c.Id)).ToList()
+            };
+            //add to database
+            if(!await _gameRepository.AddAsync(game))
+            {
+                return new GamesItemResultModel
+                {
+                    ValidationErrors = new List<ValidationResult>
+                    { new ValidationResult("Something went wrong...") }
+                };
+            }
+            //game saved
+            return new GamesItemResultModel
+            {
+                Issuccess = true,
+            };
         }
 
-        public Task<GamesItemResultModel> DeleteAsync(int id)
+        public async Task<GamesItemResultModel> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            //check if game exists
+            var game = await _gameRepository.GetByIdAsync(id);
+            if (game == null)
+            {
+                return new GamesItemResultModel
+                {
+                    ValidationErrors = new List<ValidationResult>
+                    {
+                        new ValidationResult("Game not found!")
+                    }
+                };
+            }
+            //safely delete
+            if(!await _gameRepository.DeleteAsync(game.Id))
+            {
+                //check if game exists
+                return new GamesItemResultModel
+                {
+                        ValidationErrors = new List<ValidationResult>
+                {new ValidationResult("Something went wrong...")}
+                };
+            }
+            //delete success
+            return new GamesItemResultModel { Issuccess = true };
         }
+        
 
         public async Task<GamesItemResultModel> GetAllAsync()
         {
@@ -71,9 +127,36 @@ namespace Pri.Ca.Core.Services
             return gamesItemResultModel;
         }
 
-        public Task<GamesItemResultModel> UpdateAsync(int id, string title, List<int> categoryIds)
+        public async Task<GamesItemResultModel> UpdateAsync(int id, string title, List<int> categoryIds)
         {
-            throw new NotImplementedException();
+            //check if game exists
+            var game = await _gameRepository.GetByIdAsync(id);
+            if(game == null) 
+            {
+                return new GamesItemResultModel
+                {
+                    ValidationErrors = new List<ValidationResult>
+                    {
+                        new ValidationResult("Game not found!")
+                    }
+                };
+            }
+            //update the game
+            game.Name = title;
+            game.Categories = _categoryRepository.GetAll()
+                .Where(c => categoryIds.Contains(c.Id)).ToList();
+            //save to database
+            if(!await _gameRepository.UpdateAsync(game))
+            {
+                return new GamesItemResultModel
+                {
+                    ValidationErrors = new List<ValidationResult>
+                    {
+                        new ValidationResult("something went wrong...")
+                    }
+                };
+            }
+            return new GamesItemResultModel { Issuccess = true };
         }
     }
 }

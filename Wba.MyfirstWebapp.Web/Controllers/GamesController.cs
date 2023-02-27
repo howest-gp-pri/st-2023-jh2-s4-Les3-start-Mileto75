@@ -35,5 +35,15 @@ namespace Wba.MyfirstWebapp.Web.Controllers
             gamesIndexViewModel.IsSuccess = true;
             return View(gamesIndexViewModel);
         }
+        public async Task<IActionResult> Test()
+        {
+            var result = await _gameService.AddAsync("Fifa2003",
+                new List<int> { 1, 3 });
+            var games = await _gameService.GetAllAsync();
+            result = await _gameService.UpdateAsync(1, "Fiffa20", new List<int> { 1 });
+            games = await _gameService.GetAllAsync();
+            result = await _gameService.DeleteAsync(1);
+            return Content("Test");
+        }
     }
 }

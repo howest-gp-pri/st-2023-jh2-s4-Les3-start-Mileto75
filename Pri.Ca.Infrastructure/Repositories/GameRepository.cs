@@ -36,6 +36,11 @@ namespace Pri.Ca.Infrastructure.Repositories
             return await Save();
         }
 
+        public IQueryable<Game> GetAll()
+        {
+            return _applicationDbcontext.Games.AsQueryable();
+        }
+
         public async Task<IEnumerable<Game>> GetAllAsync()
         {
             return await _applicationDbcontext
