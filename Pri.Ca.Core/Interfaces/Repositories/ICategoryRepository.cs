@@ -7,14 +7,8 @@ using System.Threading.Tasks;
 
 namespace Pri.Ca.Core.Interfaces.Repositories
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository<Category>
     {
-        //define the cruds
-        Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category> GetByIdAsync(int id);
-        Task<bool> AddAsync(Category Category);
-        Task<bool> UpdateAsync(Category Category);
-        Task<bool> DeleteAsync(int id);
-        IQueryable<Category> GetAll();
+        
     }
 }

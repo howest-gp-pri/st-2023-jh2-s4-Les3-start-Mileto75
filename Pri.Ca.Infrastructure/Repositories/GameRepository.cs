@@ -11,70 +11,15 @@ using System.Threading.Tasks;
 
 namespace Pri.Ca.Infrastructure.Repositories
 {
-    public class GameRepository : IGameRepository
+    public class GameRepository : BaseRepository<Game>, IGameRepository
     {
-        //database context
-        private readonly ApplicationDbcontext _applicationDbcontext;
-        private ILogger<GameRepository> _logger;
-
-        public GameRepository(ApplicationDbcontext applicationDbcontext, ILogger<GameRepository> logger)
+        public GameRepository(ApplicationDbcontext applicationDbcontext, ILogger<GameRepository> logger) : base(applicationDbcontext, logger)
         {
-            _applicationDbcontext = applicationDbcontext;
-            _logger = logger;
         }
 
-        public async Task<bool> AddAsync(Game game)
+        public async Task<IEnumerable<Game>> SearchByTitle(string title)
         {
-            await _applicationDbcontext.Games.AddAsync(game);
-            return await Save();
-        }
-
-        public async Task<bool> DeleteAsync(int id)
-        {
-            var game = await GetByIdAsync(id);
-            _applicationDbcontext.Games.Remove(game);
-            return await Save();
-        }
-
-        public IQueryable<Game> GetAll()
-        {
-            return _applicationDbcontext.Games.AsQueryable();
-        }
-
-        public async Task<IEnumerable<Game>> GetAllAsync()
-        {
-            return await _applicationDbcontext
-                .Games
-                .Include(g => g.Categories)
-                .ToListAsync();
-        }
-
-        public async Task<Game> GetByIdAsync(int id)
-        {
-            return await _applicationDbcontext
-                .Games
-                .Include(g => g.Categories)
-                .FirstOrDefaultAsync(g => g.Id == id);
-        }
-
-        public async Task<bool> UpdateAsync(Game game)
-        {
-            _applicationDbcontext.Games.Update(game);
-            return await Save();
-        }
-        private async Task<bool> Save()
-        {
-            try
-            {
-                await _applicationDbcontext.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                //log the error
-                _logger.LogError(dbUpdateException.Message);
-                return false;
-            }
+            return await _table.Where(g => g.Name.Contains(title)).ToListAsync();
         }
     }
 }

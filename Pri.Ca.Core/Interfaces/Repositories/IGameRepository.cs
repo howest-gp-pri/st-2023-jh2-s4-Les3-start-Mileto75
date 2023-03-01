@@ -7,14 +7,8 @@ using System.Threading.Tasks;
 
 namespace Pri.Ca.Core.Interfaces.Repositories
 {
-    public interface IGameRepository
+    public interface IGameRepository : IRepository<Game>
     {
-        //define the cruds
-        Task<IEnumerable<Game>> GetAllAsync();
-        Task<Game> GetByIdAsync(int id);
-        Task<bool> AddAsync(Game game);
-        Task<bool> UpdateAsync(Game game);
-        Task<bool> DeleteAsync(int id);
-        IQueryable<Game> GetAll();
+        Task<IEnumerable<Game>> SearchByTitle(string title);
     }
 }
