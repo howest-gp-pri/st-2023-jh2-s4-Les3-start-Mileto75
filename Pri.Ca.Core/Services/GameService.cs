@@ -22,14 +22,14 @@ namespace Pri.Ca.Core.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<GamesItemResultModel<Game>> AddAsync(string title, List<int> categoryIds)
+        public async Task<GamesItemResultModel> AddAsync(string title, List<int> categoryIds)
         {
             //check if title exists
             var games = await _gameRepository.GetAllAsync();
             if(games.Any(g => g.Name.Contains(title)))
             {
                 //game exists error
-                return new GamesItemResultModel<Game>
+                return new GamesItemResultModel
                 {
                     ValidationErrors = new List<ValidationResult>
                     { new ValidationResult("Title exists!") }
@@ -44,26 +44,26 @@ namespace Pri.Ca.Core.Services
             //add to database
             if(!await _gameRepository.AddAsync(game))
             {
-                return new GamesItemResultModel<Game>
+                return new GamesItemResultModel
                 {
                     ValidationErrors = new List<ValidationResult>
                     { new ValidationResult("Something went wrong...") }
                 };
             }
             //game saved
-            return new GamesItemResultModel<Game>
+            return new GamesItemResultModel
             {
                 Issuccess = true,
             };
         }
 
-        public async Task<GamesItemResultModel<Game>> DeleteAsync(int id)
+        public async Task<GamesItemResultModel> DeleteAsync(int id)
         {
             //check if game exists
             var game = await _gameRepository.GetByIdAsync(id);
             if (game == null)
             {
-                return new GamesItemResultModel<Game>
+                return new GamesItemResultModel
                 {
                     ValidationErrors = new List<ValidationResult>
                     {
@@ -75,20 +75,20 @@ namespace Pri.Ca.Core.Services
             if(!await _gameRepository.DeleteAsync(game.Id))
             {
                 //check if game exists
-                return new GamesItemResultModel<Game>
+                return new GamesItemResultModel
                 {
                         ValidationErrors = new List<ValidationResult>
                 {new ValidationResult("Something went wrong...")}
                 };
             }
             //delete success
-            return new GamesItemResultModel<Game> { Issuccess = true };
+            return new GamesItemResultModel { Issuccess = true };
         }
         
 
-        public async Task<GamesItemResultModel<Game>> GetAllAsync()
+        public async Task<GamesItemResultModel> GetAllAsync()
         {
-            var gamesItemResultModel = new GamesItemResultModel<Game>();
+            var gamesItemResultModel = new GamesItemResultModel();
             var games = await _gameRepository.GetAllAsync();
             //validation
             if (games.Count() == 0)
@@ -108,9 +108,9 @@ namespace Pri.Ca.Core.Services
 
         
 
-        public async Task<GamesItemResultModel<Game>> GetByIdAsync(int id)
+        public async Task<GamesItemResultModel> GetByIdAsync(int id)
         {
-            var gamesItemResultModel = new GamesItemResultModel<Game>();
+            var gamesItemResultModel = new GamesItemResultModel();
             var game = await _gameRepository.GetByIdAsync(id);
             //validation
             if(game == null) 
@@ -127,13 +127,13 @@ namespace Pri.Ca.Core.Services
             return gamesItemResultModel;
         }
 
-        public async Task<GamesItemResultModel<Game>> UpdateAsync(int id, string title, List<int> categoryIds)
+        public async Task<GamesItemResultModel> UpdateAsync(int id, string title, List<int> categoryIds)
         {
             //check if game exists
             var game = await _gameRepository.GetByIdAsync(id);
             if(game == null) 
             {
-                return new GamesItemResultModel<Game>
+                return new GamesItemResultModel
                 {
                     ValidationErrors = new List<ValidationResult>
                     {
@@ -148,7 +148,7 @@ namespace Pri.Ca.Core.Services
             //save to database
             if(!await _gameRepository.UpdateAsync(game))
             {
-                return new GamesItemResultModel<Game>
+                return new GamesItemResultModel
                 {
                     ValidationErrors = new List<ValidationResult>
                     {
@@ -156,7 +156,7 @@ namespace Pri.Ca.Core.Services
                     }
                 };
             }
-            return new GamesItemResultModel<Game> { Issuccess = true };
+            return new GamesItemResultModel { Issuccess = true };
         }
     }
 }

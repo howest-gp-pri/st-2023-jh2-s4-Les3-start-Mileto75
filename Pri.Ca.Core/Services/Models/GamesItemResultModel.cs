@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Pri.Ca.Core.Services.Models
 {
-    public class GamesItemResultModel<T> : BaseItemResultModel
+    public class GamesItemResultModel : BaseItemResultModel
     {
         //ienumerable of games
-        public IEnumerable<T> Games { get; set; }
+        public IEnumerable<Game> Games { get; set; }
     }
 }

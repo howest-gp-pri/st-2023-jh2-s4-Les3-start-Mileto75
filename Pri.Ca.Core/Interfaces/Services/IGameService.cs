@@ -11,10 +11,10 @@ namespace Pri.Ca.Core.Interfaces.Services
     public interface IGameService
     {
         //Get methods
-        Task<GamesItemResultModel<Game>> GetAllAsync();
-        Task<GamesItemResultModel<Game>> GetByIdAsync(int id);
-        Task<GamesItemResultModel<Game>> AddAsync(string title,List<int> categoryIds);
-        Task<GamesItemResultModel<Game>> DeleteAsync(int id);
-        Task<GamesItemResultModel<Game>> UpdateAsync(int id, string title,List<int> categoryIds);
+        Task<GamesItemResultModel> GetAllAsync();
+        Task<GamesItemResultModel> GetByIdAsync(int id);
+        Task<GamesItemResultModel> AddAsync(string title,List<int> categoryIds);
+        Task<GamesItemResultModel> DeleteAsync(int id);
+        Task<GamesItemResultModel> UpdateAsync(int id, string title,List<int> categoryIds);
     }
 }
